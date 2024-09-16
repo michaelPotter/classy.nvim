@@ -23,12 +23,22 @@ end
 --                              CREATION                              --
 ------------------------------------------------------------------------
 
---- Create a new buffer with the given name if it doesn't exist, or return the existing one if it does.
+--- Create a new buffer with the given name if it doesn't exist, or return the existing one if it does. The callback will be called with the Buf if a new buffer had to be created.
 --- @param name string
-function Buf.ensure(name)
-	local n = vim.fn.bufadd(name)
-	vim.fn.bufload(n)
-	return Buf.get(n)
+--- @param callback? function<Buf>
+function Buf.ensure(name, callback)
+	local bufnr = vim.fn.bufnr(name)
+	if bufnr > 0 then
+		return Buf.get(bufnr)
+	else
+		local buf = Buf.new()
+		-- buf:load()
+		buf:set_name(name)
+		if callback then
+			callback(buf)
+		end
+		return buf
+	end
 end
 
 --- Create a new buffer.
@@ -125,6 +135,10 @@ end
 
 function Buf:is_loaded()
 	return vim.api.nvim_buf_is_loaded(self.bufnr)
+end
+
+function Buf:load()
+	return vim.fn.bufload(self.bufnr)
 end
 
 --
