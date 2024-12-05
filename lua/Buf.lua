@@ -10,6 +10,13 @@ Buf.__index = Buf
 --- @param bufnr number
 --- @return Buf
 function Buf.get(bufnr)
+	-- This makes sure that for bufnr = 0 the Buffer object holds a ref to the current buffer
+	-- at time of creation... instead of always acting on the current buffer,
+	-- whatever that happens to be at the time.
+	if (bufnr == 0) then
+		bufnr = vim.api.nvim_get_current_buf()
+	end
+
 	local self = {
 		--- @deprecated prefer just "num"
 		bufnr = bufnr,
