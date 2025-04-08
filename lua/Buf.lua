@@ -166,6 +166,22 @@ function Buf:set_option(name, value)
 end
 
 --
+-- VARS
+--
+
+--- @param name string
+function Buf:get_var(name)
+	vim.api.nvim_buf_get_var(self.bufnr, name)
+end
+
+--- @param name string
+--- @param value any
+function Buf:set_var(name, value)
+	vim.api.nvim_buf_set_var(self.bufnr, name, value)
+	return self
+end
+
+--
 -- LISTED
 --
 
@@ -208,6 +224,17 @@ end
 -- TODO move to util
 function Buf.list()
 	return vim.api.nvim_list_bufs()
+end
+
+-- TODO Maybe investigate generators?
+--- @returns Buf[]
+function Buf.all()
+	local raw = vim.api.nvim_list_bufs()
+	local bufs = {}
+	for i, b in pairs(raw) do
+		table.insert(bufs, Buf.get(b));
+	end
+	return bufs
 end
 
 ------------------------------------------------------------------------
