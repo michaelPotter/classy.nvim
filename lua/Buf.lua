@@ -145,7 +145,8 @@ function Buf:is_loaded()
 end
 
 function Buf:load()
-	return vim.fn.bufload(self.bufnr)
+	vim.fn.bufload(self.bufnr)
+	return self
 end
 
 --
@@ -154,7 +155,7 @@ end
 
 --- @param name string
 function Buf:get_option(name)
-	vim.api.nvim_get_option_value(name, {buf = self.bufnr})
+	return vim.api.nvim_get_option_value(name, {buf = self.bufnr})
 end
 
 --- @param name string
